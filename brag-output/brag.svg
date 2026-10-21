@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&amp;family=Syne:wght@700;800&amp;display=swap');
+      .title-outline {
+        font-family: 'Syne', sans-serif;
+        font-weight: 800;
+        font-size: 168px;
+        fill: none;
+        stroke: #ebfc72;
+        stroke-width: 3.5px;
+        letter-spacing: -4px;
+      }
+      .mono-tag {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 20px;
+        font-weight: 800;
+        fill: #ebfc72;
+        letter-spacing: 3px;
+      }
+      .mono-sub {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 32px;
+        font-weight: 700;
+        fill: #ffffff;
+        letter-spacing: 0.5px;
+      }
+      .mono-meta {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 19px;
+        font-weight: 500;
+        fill: #e8e9e1;
+        letter-spacing: 1px;
+      }
+      .badge-txt {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 17px;
+        font-weight: 700;
+        fill: #00e5a3;
+      }
+    </style>
+    <linearGradient id="bgGlow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#181c13"/>
+      <stop offset="100%" stop-color="#11130d"/>
+    </linearGradient>
+    <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(235, 252, 114, 0.12)"/>
+      <stop offset="100%" stop-color="rgba(17, 19, 13, 0)"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="url(#bgGlow)"/>
+  <circle cx="960" cy="540" r="700" fill="url(#centerGlow)"/>
+
+  <!-- Tactical Grid Hairlines -->
+  <path d="M0 120H1920M0 240H1920M0 360H1920M0 480H1920M0 600H1920M0 720H1920M0 840H1920M0 960H1920" stroke="#3a3d31" stroke-width="0.8" stroke-dasharray="6 8" opacity="0.35"/>
+  <path d="M160 0V1080M320 0V1080M480 0V1080M640 0V1080M800 0V1080M960 0V1080M1120 0V1080M1280 0V1080M1440 0V1080M1600 0V1080M1760 0V1080" stroke="#3a3d31" stroke-width="0.8" stroke-dasharray="6 8" opacity="0.35"/>
+
+  <!-- Cinematic Letterbox Borders -->
+  <rect x="0" y="0" width="1920" height="70" fill="#080906"/>
+  <rect x="0" y="1010" width="1920" height="70" fill="#080906"/>
+  <line x1="0" y1="70" x2="1920" y2="70" stroke="#3a3d31" stroke-width="1"/>
+  <line x1="0" y1="1010" x2="1920" y2="1010" stroke="#3a3d31" stroke-width="1"/>
+
+  <!-- 8-Corner Hairline Crosshairs -->
+  <path d="M80 120H110M80 120V150" stroke="#ebfc72" stroke-width="3"/>
+  <path d="M1840 120H1810M1840 120V150" stroke="#ebfc72" stroke-width="3"/>
+  <path d="M80 960H110M80 960V930" stroke="#ebfc72" stroke-width="3"/>
+  <path d="M1840 960H1810M1840 960V930" stroke="#ebfc72" stroke-width="3"/>
+
+  <!-- Top Telemetry Strip -->
+  <circle cx="95" cy="40" r="6" fill="#ff5b42"/>
+  <text x="115" y="46" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#ffffff" letter-spacing="2">ACTIVE DISASTER RESPONSE ZONE // EAST RIVER BASIN</text>
+  <text x="1820" y="46" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#ebfc72" text-anchor="end" letter-spacing="2">RELIEFLENS // LAUNCH FILM</text>
+
+  <!-- Central Badge -->
+  <rect x="710" y="240" width="500" height="42" fill="#1e2417" stroke="#00e5a3" stroke-width="1.5" rx="3"/>
+  <text x="960" y="267" text-anchor="middle" class="badge-txt">✓ RESCUE BOAT R-3 DISPATCHED · ETA 8 MIN</text>
+
+  <!-- Monumental Monolith Brand Title -->
+  <text x="960" y="520" text-anchor="middle" class="title-outline">RELIEFLENS</text>
+
+  <!-- Tagline -->
+  <text x="960" y="610" text-anchor="middle" class="mono-sub">When disasters move fast, help moves faster.</text>
+  <text x="960" y="665" text-anchor="middle" class="mono-meta">Human-in-the-Loop Emergency Rescue Coordination · 100% Explainable Decisions</text>
+
+  <!-- Bottom Metric Chips -->
+  <g transform="translate(480, 750)">
+    <rect x="0" y="0" width="280" height="90" fill="#171a11" stroke="#3a3d31" stroke-width="1.5" rx="3"/>
+    <text x="20" y="32" font-family="JetBrains Mono" font-size="13" font-weight="700" fill="#e8e9e1">EMERGENCY PRIORITY</text>
+    <text x="20" y="70" font-family="Syne" font-size="34" font-weight="800" fill="#ff5b42">88 / 100</text>
+  </g>
+
+  <g transform="translate(820, 750)">
+    <rect x="0" y="0" width="280" height="90" fill="#171a11" stroke="#3a3d31" stroke-width="1.5" rx="3"/>
+    <text x="20" y="32" font-family="JetBrains Mono" font-size="13" font-weight="700" fill="#e8e9e1">PEOPLE AT RISK</text>
+    <text x="20" y="70" font-family="Syne" font-size="34" font-weight="800" fill="#ebfc72">45 RESIDENTS</text>
+  </g>
+
+  <g transform="translate(1160, 750)">
+    <rect x="0" y="0" width="280" height="90" fill="#171a11" stroke="#3a3d31" stroke-width="1.5" rx="3"/>
+    <text x="20" y="32" font-family="JetBrains Mono" font-size="13" font-weight="700" fill="#e8e9e1">DECISION SIGN-OFF</text>
+    <text x="20" y="70" font-family="Syne" font-size="28" font-weight="800" fill="#00e5a3">CAPT. VANCE</text>
+  </g>
+
+  <!-- Bottom Sub-bar -->
+  <text x="960" y="1046" text-anchor="middle" font-family="JetBrains Mono" font-size="15" font-weight="600" fill="#e8e9e1" letter-spacing="1">FREE PUBLIC EMERGENCY RESPONSE NETWORK · IN IMMEDIATE DANGER CALL 911</text>
+</svg>

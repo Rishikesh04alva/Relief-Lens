@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ReliefLens — Official Launch Package (/brag --tone cinematic --voice)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Syne:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #11130d;
+      --bg-panel: #171a11;
+      --bg-card: #1c2016;
+      --fg: #ffffff;
+      --fg-muted: #e8e9e1;
+      --grey: #c8cbc0;
+      --hairline: #3a3d31;
+      --yellow: #ebfc72;
+      --red: #ff5b42;
+      --green: #00e5a3;
+      --font-mono: "JetBrains Mono", monospace;
+      --font-display: "Syne", sans-serif;
+      --font-body: "Inter", sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+    }
+
+    /* Header */
+    .header {
+      border-bottom: 1.5px solid var(--hairline);
+      padding-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .header-titles h1 {
+      font-family: var(--font-display);
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      color: #ffffff;
+    }
+
+    .header-titles p {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--yellow);
+      margin-top: 6px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .header-badges {
+      display: flex;
+      gap: 10px;
+    }
+
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 6px 12px;
+      border: 1px solid var(--hairline);
+      background: var(--bg-panel);
+      color: var(--fg);
+    }
+    .badge-accent {
+      border-color: var(--yellow);
+      color: var(--yellow);
+    }
+    .badge-urgent {
+      border-color: var(--red);
+      color: var(--red);
+      background: rgba(255, 91, 66, 0.1);
+    }
+
+    /* Video Frame Embed */
+    .video-hero {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #080905;
+      border: 1.5px solid var(--hairline);
+      box-shadow: 0 20px 80px rgba(0, 0, 0, 0.95), 0 0 40px rgba(235, 252, 114, 0.08);
+      overflow: hidden;
+    }
+
+    .video-hero iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* Section Cards Grid */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .card {
+      background: var(--bg-panel);
+      border: 1px solid var(--hairline);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      position: relative;
+    }
+
+    .card h2 {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+      border-bottom: 1px solid var(--hairline);
+      padding-bottom: 0.75rem;
+    }
+
+    /* Teleprompter Table */
+    .vo-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      font-family: var(--font-mono);
+    }
+
+    .vo-table th {
+      text-align: left;
+      padding: 8px 10px;
+      background: var(--bg);
+      border-bottom: 1.5px solid var(--hairline);
+      color: var(--yellow);
+    }
+
+    .vo-table td {
+      padding: 10px;
+      border-bottom: 1px solid var(--hairline);
+      color: var(--fg);
+    }
+
+    .vo-table .timestamp {
+      color: var(--yellow);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* Copy Box */
+    .copy-box {
+      background: var(--bg);
+      border: 1px solid var(--hairline);
+      padding: 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #ffffff;
+      white-space: pre-wrap;
+      line-height: 1.5;
+      position: relative;
+    }
+
+    .copy-btn {
+      align-self: flex-start;
+      background: var(--bg-card);
+      border: 1.5px solid var(--yellow);
+      color: var(--yellow);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 8px 16px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      background: var(--yellow);
+      color: #11140d;
+    }
+
+    /* Deliverables List */
+    .deliverables-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+    }
+
+    .deliverables-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: var(--bg);
+      border: 1px solid var(--hairline);
+    }
+
+    .deliverables-list .name {
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .deliverables-list .desc {
+      color: var(--fg-muted);
+      font-size: 0.75rem;
+    }
+
+    .link-pill {
+      color: var(--yellow);
+      text-decoration: underline;
+      font-weight: 700;
+    }
+
+    /* Poster Preview */
+    .poster-img {
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--hairline);
+      display: block;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--hairline);
+      padding-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--fg-muted);
+    }
+
+    @media (max-width: 900px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Header -->
+    <header class="header">
+      <div class="header-titles">
+        <h1>RELIEFLENS // LAUNCH FILM</h1>
+        <p>GENERATED VIA /BRAG --TONE CINEMATIC --VOICE</p>
+      </div>
+      <div class="header-badges">
+        <span class="badge badge-accent">TONE: CINEMATIC</span>
+        <span class="badge badge-urgent">VOICEOVER: ENABLED</span>
+        <span class="badge">DURATION: 20.0s</span>
+        <span class="badge">FORMAT: 16:9 (1920x1080)</span>
+      </div>
+    </header>
+
+    <!-- Embedded Video Player -->
+    <div class="video-hero">
+      <iframe src="./composition/index.html" title="ReliefLens Cinematic Launch Film"></iframe>
+    </div>
+
+    <!-- 2-Column Info Grid -->
+    <div class="grid-2">
+      
+      <!-- Column 1: Voiceover Teleprompter Script -->
+      <div class="card">
+        <h2>Spoken Voiceover Script (--voice)</h2>
+        <p style="font-size: 0.85rem; color: var(--fg-muted);">
+          Crafted to complement the visual pacing without reading on-screen cards, voiced with calm, commanding authority.
+        </p>
+        <table class="vo-table">
+          <thead>
+            <tr>
+              <th>TIMING</th>
+              <th>SCENE & NARRATION</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="timestamp">0.0s – 4.5s</td>
+              <td><strong>The Breach:</strong><br><em>"When catastrophic floodwaters rise... every single second is a life."</em></td>
+            </tr>
+            <tr>
+              <td class="timestamp">4.5s – 9.5s</td>
+              <td><strong>Situation Room:</strong><br><em>"ReliefLens maps the crisis in real time, finding trapped families and routing rescue crews."</em></td>
+            </tr>
+            <tr>
+              <td class="timestamp">9.5s – 14.5s</td>
+              <td><strong>The Scorecard:</strong><br><em>"Every decision is transparent. Every score is verified. And real human chiefs make the final call."</em></td>
+            </tr>
+            <tr>
+              <td class="timestamp">14.5s – 20.0s</td>
+              <td><strong>Dispatch & Monolith:</strong><br><em>"ReliefLens. Because when disasters move fast, help moves faster."</em></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Column 2: Ready-to-Post Share Copy -->
+      <div class="card">
+        <h2>Social Share Copy (share-copy.txt)</h2>
+        <p style="font-size: 0.85rem; color: var(--fg-muted);">
+          Optimized for maximum engagement on X/Twitter, LinkedIn, and Discord.
+        </p>
+        <div class="copy-box" id="shareCopyContent">When catastrophic floodwaters rise, every second counts.
+
+Introducing ReliefLens: the emergency rescue platform built for fair, explainable crisis coordination — with experienced human chiefs always in control.
+
+Disasters move fast. Help moves faster. 🚨🚤</div>
+        <button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('shareCopyContent').innerText); alert('Copied to clipboard!');">
+          📋 COPY SHARE CAPTION
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Second Row: Settled Poster Frame & Deliverables List -->
+    <div class="grid-2">
+      
+      <!-- Poster Card -->
+      <div class="card">
+        <h2>Settled Poster Frame (brag.jpg)</h2>
+        <p style="font-size: 0.85rem; color: var(--fg-muted);">
+          Baked into Frame 0 of the launch cut to guarantee a dramatic, postable thumbnail across all social networks.
+        </p>
+        <img src="./brag.jpg" alt="ReliefLens Cinematic Poster" class="poster-img">
+      </div>
+
+      <!-- Deliverables Manifest -->
+      <div class="card">
+        <h2>Deliverables Manifest</h2>
+        <ul class="deliverables-list">
+          <li>
+            <div>
+              <span class="name">composition/index.html</span><br>
+              <span class="desc">Interactive 20s timeline player & recording runtime</span>
+            </div>
+            <a href="./composition/index.html" target="_blank" class="link-pill">Launch ➔</a>
+          </li>
+          <li>
+            <div>
+              <span class="name">brag-plan.md</span><br>
+              <span class="desc">Complete creative storyboard, angle & rubric</span>
+            </div>
+            <a href="./brag-plan.md" target="_blank" class="link-pill">View ➔</a>
+          </li>
+          <li>
+            <div>
+              <span class="name">composition-brief.md</span><br>
+              <span class="desc">Hyperframes handoff brief & timing contracts</span>
+            </div>
+            <a href="./composition-brief.md" target="_blank" class="link-pill">View ➔</a>
+          </li>
+          <li>
+            <div>
+              <span class="name">share-copy.txt & variants.md</span><br>
+              <span class="desc">Pre-formatted launch posts for all social platforms</span>
+            </div>
+            <a href="./share-copy.txt" target="_blank" class="link-pill">View ➔</a>
+          </li>
+          <li>
+            <div>
+              <span class="name">brag.jpg & brag.svg</span><br>
+              <span class="desc">High-res 16:9 settled poster & vector stills</span>
+            </div>
+            <a href="./brag.svg" target="_blank" class="link-pill">View ➔</a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <span>RELIEFLENS LAUNCH VIDEO PACKAGE // /BRAG PIPELINE</span>
+      <span>READY FOR DEPLOYMENT & SOCIAL POSTING</span>
+    </footer>
+
+  </div>
+
+</body>
+</html>

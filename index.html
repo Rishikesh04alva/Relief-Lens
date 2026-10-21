@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RELIEFLENS — Emergency Rescue Help & Disaster Response</title>
+  <meta name="description" content="ReliefLens: Emergency rescue coordination platform. Clear explanations, fair help prioritization, and human rescue chiefs always in control.">
+  <meta name="author" content="ReliefLens Emergency Network">
+  
+  <!-- Inversa Typography: JetBrains Mono + Syne -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Syne:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="./index.css">
+</head>
+<body>
+  <div id="__app">
+    
+    <!-- ====================================================================
+         1. INVERSA SIGNATURE LOADER
+         ==================================================================== -->
+    <div class="loader is-home" id="pageLoader">
+      <div class="loader-background"></div>
+      <div class="loader-mask">
+        <div class="loader-bar"></div>
+        <div class="loader-bar"></div>
+        <svg viewBox="0 0 512 686" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="loader-svg">
+          <path d="M21 686H0V623H21V686Z" fill="currentColor"></path>
+          <path d="M243 665H264V686H159V665H180V644H243V665Z" fill="currentColor"></path>
+          <path d="M512 219H491V198H470V135H491V114H512V219Z" fill="currentColor"></path>
+          <path d="M512 78H491V57H512V78Z" fill="currentColor"></path>
+          <path d="M72 21H21V63H0V0H72V21Z" fill="currentColor"></path>
+          <path d="M369 21H327V42H201V21H138V0H369V21Z" fill="currentColor"></path>
+          <path d="M512 42H491V21H404V0H512V42Z" fill="currentColor"></path>
+        </svg>
+        <div class="loader-filter"></div>
+      </div>
+      <div class="loader-container">
+        <div class="loader-loading" id="loaderText">CONNECTING TO EMERGENCY RESCUE NETWORK...</div>
+        <div class="loader-progress">
+          <div class="loader-progress-bar" id="loaderProgressBar"></div>
+          <div class="loader-stats">
+            <div class="loader-stat">
+              <span class="loader-label">NETWORK:</span>
+              <span class="loader-value" id="loaderPhase">0%</span>
+            </div>
+            <div class="loader-stat">
+              <span class="loader-label">STATUS:</span>
+              <span class="loader-value text-stable">ONLINE</span>
+            </div>
+            <div class="loader-stat">
+              <span class="loader-label">RESCUE ZONE:</span>
+              <span class="loader-value text-yellow">FLOOD SECTOR ACTIVE</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         2. INVERSA CUSTOM RETICLE CURSOR
+         ==================================================================== -->
+    <div class="cursor" id="customCursor" aria-hidden="true">
+      <div class="cursor-inner">
+        <div class="cursor-label" id="cursorLabel">EXPLORE</div>
+      </div>
+      <div class="cursor-outer">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="cursor-progress">
+          <circle cx="50" cy="50" r="46"></circle>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         3. INVERSA HEADER & EASY CALL-FOR-HELP BUTTON
+         ==================================================================== -->
+    <header class="header" id="mainHeader">
+      <div class="header-left">
+        <a href="#hero" class="logo" id="brandLogo">
+          <span class="logo-text">RELIEFLENS</span>
+          <span class="logo-sub">EMERGENCY RESCUE & HELP PLATFORM</span>
+        </a>
+        <div class="header-telemetry-strip">
+          <span class="beacon-dot"></span>
+          <span class="defcon-text">ACTIVE DISASTER RESPONSE ZONE</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- Prominent Emergency Action for Normal Users -->
+        <button id="btnQuickCallHelp" class="base-button is-emergency-header" data-cursor="SOS HELP">
+          <span class="emergency-pulse-dot"></span>
+          <span class="button-title">🚨 CALL FOR HELP NOW</span>
+        </button>
+
+        <a href="#command" class="base-link header-tactical-link" data-cursor="MAP">
+          [LIVE RESCUE MAP]
+        </a>
+
+        <button id="headerAudioBtn" class="base-link header-audio-btn" title="Toggle Sound Feedback">
+          SOUND: <span id="headerAudioStatus">OFF</span>
+        </button>
+
+        <button class="menu-button" id="menuToggleBtn" aria-label="Toggle Menu" data-cursor="MENU">
+          <div class="menu-label" id="menuLabelText">Menu</div>
+          <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" class="cross-svg" id="menuCrossSvg">
+            <path d="M12 5.5V7H8.5V5.5H12Z" fill="currentColor"></path>
+            <path d="M3.5 5.5V7L0 7L0 5.5L3.5 5.5Z" fill="currentColor"></path>
+            <path d="M6.5 12H5V8.5H6.5V12Z" fill="currentColor"></path>
+            <path d="M6.5 3.5H5V0H6.5V3.5Z" fill="currentColor"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ====================================================================
+         4. FULL-SCREEN SIDE MENU OVERLAY (SIMPLIFIED TERMS)
+         ==================================================================== -->
+    <nav class="menu" id="fullMenu" aria-hidden="true">
+      <div class="menu-main">
+        <div class="menu-item"><a href="#hero" class="menu-link" data-nav>01. Call For Help</a></div>
+        <div class="menu-item"><a href="#values" class="menu-link" data-nav>02. How Help is Prioritized</a></div>
+        <div class="menu-item"><a href="#showcase" class="menu-link" data-nav>03. 4-Step Rescue Process</a></div>
+        <div class="menu-item"><a href="#command" class="menu-link" data-nav>04. Live Map & Rescue Queue</a></div>
+        <div class="menu-item"><a href="#quotes" class="menu-link" data-nav>05. Stories from the Field</a></div>
+        <div class="menu-item"><a href="#contact" class="menu-link" data-nav>06. Emergency Hotlines</a></div>
+      </div>
+      <div class="menu-social">
+        <button class="base-button is-emergency-header" id="btnMenuCallHelp" style="margin-right: 1.5rem;">
+          🚨 REPORT AN EMERGENCY NOW
+        </button>
+        <span class="base-link">24/7 Human-Led Rescue Coordination</span>
+      </div>
+      <div class="menu-copyright">
+        <span>© 2026 RELIEFLENS DISASTER NETWORK</span>
+        <span>PEOPLE FIRST · NO BLACK-BOX SECRETS</span>
+      </div>
+    </nav>
+
+    <!-- ====================================================================
+         5. MAIN CONTENT WRAPPER
+         ==================================================================== -->
+    <main class="main" id="mainContent">
+      <div class="scroll-container" id="scrollContainer">
+
+        <!-- ================================================================
+             SECTION 1: HERO (CLEAR, ACCESSIBLE, SIMPLE WORDS)
+             ================================================================ -->
+        <section class="home-hero" id="hero">
+          <div class="hero-container">
+            <div class="hero-copy">
+              <div class="hero-meta-kicker">
+                <span class="blinker-square"></span>
+                <span class="kicker-text">EMERGENCY RESCUE · FREE HELP FOR PEOPLE IN DANGER</span>
+              </div>
+              
+              <h1 class="hero-heading">
+                Trapped in a disaster?<br>We send rescue to you.
+              </h1>
+              
+              <p class="hero-body-intro">
+                When water rises into homes, power fails, or roads get washed out, calling for help must be fast and easy. 
+                ReliefLens helps local fire and boat rescue crews find you quickly. 
+                Computers help organize who is in the biggest danger, but 
+                <strong>experienced human rescue chiefs always review every call and send help</strong>.
+              </p>
+
+              <div class="hero-actions">
+                <button class="base-button is-emergency-cta" id="btnHeroCallHelp" data-cursor="SOS HELP">
+                  <span class="emergency-pulse-dot"></span>
+                  <span class="button-title">🚨 CALL FOR HELP / GET RESCUED NOW</span>
+                </button>
+                <a href="#command" class="base-button is-button" data-cursor="VIEW MAP">
+                  <span class="button-title">See Live Rescue Map ➔</span>
+                </a>
+              </div>
+
+              <div class="hero-reassurance-note">
+                <span class="check-icon">✓</span> 100% Free Public Service · Connected directly to local 911, firefighters, and boat rescue crews
+              </div>
+            </div>
+
+            <!-- Inversa-Style Hotspot Map & Live Rescue Telemetry Graphic -->
+            <div class="hero-visual-wrapper">
+              <div class="hero-telemetry-indicator">
+                <div class="indicator-bar"><div class="indicator-progress"></div></div>
+                <span class="telemetry-tag">LIVE FLOOD & RESCUE MAP</span>
+              </div>
+
+              <div class="hero-ui-legend">
+                <div class="legend-chip">
+                  <span class="legend-dot dot-urgent"></span>
+                  <span class="legend-lbl">PEOPLE TRAPPED IN FLOOD (4)</span>
+                </div>
+                <div class="legend-chip">
+                  <span class="legend-dot dot-specialist"></span>
+                  <span class="legend-lbl">RESCUE BOATS & COPTERS (12)</span>
+                </div>
+                <div class="legend-chip">
+                  <span class="legend-dot dot-warning"></span>
+                  <span class="legend-lbl">CALLS BEING CHECKED (5)</span>
+                </div>
+              </div>
+
+              <!-- Hotspots SVG Vector Map Overlay -->
+              <div class="hero-map-frame">
+                <div class="corner-cross cross-tl"></div>
+                <div class="corner-cross cross-tr"></div>
+                <div class="corner-cross cross-bl"></div>
+                <div class="corner-cross cross-br"></div>
+
+                <svg viewBox="0 0 764 542" fill="none" xmlns="http://www.w3.org/2000/svg" class="hero-hotspots-svg">
+                  <!-- Terrain Grid Hairlines -->
+                  <path d="M0 90H764M0 180H764M0 270H764M0 360H764M0 450H764" stroke="#595A51" stroke-width="0.75" stroke-dasharray="4 6" opacity="0.3"></path>
+                  <path d="M90 0V542M180 0V542M270 0V542M360 0V542M450 0V542M540 0V542M630 0V542" stroke="#595A51" stroke-width="0.75" stroke-dasharray="4 6" opacity="0.3"></path>
+
+                  <!-- Flooded River Basin Path -->
+                  <path d="M40 70C220 180 290 320 620 480" stroke="#4AA8B8" stroke-width="12" stroke-linecap="round" opacity="0.5"></path>
+                  <path d="M290 320C420 300 520 360 680 340" stroke="#37828F" stroke-width="6" stroke-linecap="round" opacity="0.4"></path>
+
+                  <!-- High Danger Flood Hotspots -->
+                  <g class="hazard-hotspots">
+                    <!-- FL-8042 (Senior Care Home) -->
+                    <circle cx="291" cy="326" r="22" fill="rgba(241,102,77,0.2)"></circle>
+                    <circle cx="291" cy="326" r="7" fill="#F1664D"></circle>
+                    <text x="312" y="325" fill="#F4F3E8" font-family="JetBrains Mono" font-size="12" font-weight="700">Elderly Care Home (45 People Trapped)</text>
+                    <text x="312" y="342" fill="#EBFC72" font-family="JetBrains Mono" font-size="10">URGENT: WATER 6FT DEEP & RISING</text>
+
+                    <!-- EQ-4419 (Bridge Fracture) -->
+                    <circle cx="540" cy="140" r="16" fill="rgba(241,102,77,0.2)"></circle>
+                    <circle cx="540" cy="140" r="6" fill="#F1664D"></circle>
+                    <text x="560" y="144" fill="#F4F3E8" font-family="JetBrains Mono" font-size="11" font-weight="700">Highland Bridge (12 Cars Trapped)</text>
+
+                    <!-- CY-9012 (Chemical Depot) -->
+                    <circle cx="160" cy="220" r="16" fill="rgba(241,102,77,0.2)"></circle>
+                    <circle cx="160" cy="220" r="6" fill="#F1664D"></circle>
+                    <text x="180" y="224" fill="#F4F3E8" font-family="JetBrains Mono" font-size="11" font-weight="700">Chemical Plant Flood Danger</text>
+                  </g>
+
+                  <!-- Rescue Responders -->
+                  <g class="specialist-hotspots">
+                    <circle cx="340" cy="280" r="6" fill="#EBFC72"></circle>
+                    <text x="355" y="284" fill="#EBFC72" font-family="JetBrains Mono" font-size="11" font-weight="700">🚤 Rescue Boat R-3 (Approaching)</text>
+
+                    <circle cx="480" cy="110" r="6" fill="#EBFC72"></circle>
+                    <text x="495" y="114" fill="#EBFC72" font-family="JetBrains Mono" font-size="11" font-weight="700">🚁 Helicopter SAR-1 (In Air)</text>
+
+                    <circle cx="240" cy="360" r="6" fill="#EBFC72"></circle>
+                    <text x="255" y="364" fill="#EBFC72" font-family="JetBrains Mono" font-size="11" font-weight="700">🛸 Search Drone Alpha</text>
+                  </g>
+                </svg>
+
+                <div class="map-live-stream-badge">
+                  <span class="beacon-dot"></span>
+                  <span class="badge-text-bright">RESCUE TEAMS ARE LIVE & RECEIVING EMERGENCY CALLS</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             SECTION 2: VALUES GRID (SIMPLE, HONEST, HUMAN EXPLANATIONS)
+             ================================================================ -->
+        <section class="values" id="values">
+          <div class="values-container">
+            <h2 class="values-heading">
+              How ReliefLens gets help to people faster, fairly, and without secrets.
+            </h2>
+
+            <div class="values-blocks">
+              
+              <!-- Block 1: Clear Reasons -->
+              <div class="value-block">
+                <div class="block-content">
+                  <h3 class="block-title is-blinker">01 · Clear Reasons, No Secrets</h3>
+                  <p class="block-text">
+                    When you call 911 in a flood, you deserve to know you are being taken seriously. 
+                    ReliefLens breaks down danger using 4 clear facts anyone can understand: 
+                    <strong>How deep is the water? Are children or seniors trapped? How quickly is the road cutting off?</strong> 
+                    Nothing is hidden behind confusing jargon.
+                  </p>
+                  <button class="base-button is-button btn-open-scorecard-action" data-cursor="MATH">
+                    <span class="button-title">See How Help is Scored ➔</span>
+                  </button>
+                </div>
+                <div class="block-asset">
+                  <div class="corner-cross cross-tl"></div>
+                  <div class="corner-cross cross-tr"></div>
+                  <div class="corner-cross cross-bl"></div>
+                  <div class="corner-cross cross-br"></div>
+                  <div class="telemetry-card-preview">
+                    <div class="preview-metric-row">
+                      <span class="k">WHY HELP IS SENT FIRST:</span>
+                      <span class="v text-yellow">4 COMMON-SENSE FACTORS</span>
+                    </div>
+                    <div class="formula-preview-pill">
+                      <code>DANGER (40%) + PEOPLE TRAPPED (30%) + TIME LEFT (20%) + VERIFICATION (10%)</code>
+                    </div>
+                    <div class="metric-meter-bar">
+                      <div class="meter-bar-fill" style="width: 88%"></div>
+                    </div>
+                    <div class="meter-footnote">CLEAR REASONS · TRANSPARENT TO THE PUBLIC</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Block 2: Human Chiefs Decide -->
+              <div class="value-block">
+                <div class="block-content">
+                  <h3 class="block-title is-blinker">02 · Real Humans Make the Final Decision</h3>
+                  <p class="block-text">
+                    No computer program should make life-or-death decisions alone. 
+                    Software does the math to recommend who needs help fastest, but 
+                    <strong>experienced rescue chiefs review every single situation and sign their name</strong> 
+                    before deploying rescue boats, helicopters, or ambulances.
+                  </p>
+                  <button class="base-button is-button btn-open-audit-action" data-cursor="AUDIT">
+                    <span class="button-title">View Signed Rescue Log ➔</span>
+                  </button>
+                </div>
+                <div class="block-asset">
+                  <div class="corner-cross cross-tl"></div>
+                  <div class="corner-cross cross-tr"></div>
+                  <div class="corner-cross cross-bl"></div>
+                  <div class="corner-cross cross-br"></div>
+                  <div class="telemetry-card-preview">
+                    <div class="preview-metric-row">
+                      <span class="k">RESCUE CHIEF ON DUTY:</span>
+                      <span class="v text-yellow">CAPTAIN MARCUS VANCE</span>
+                    </div>
+                    <div class="audit-preview-stamp">
+                      <span>✓ SIGNED DECISION RECORDED</span>
+                    </div>
+                    <p class="audit-preview-quote">
+                      "Spoke directly with floor nurse; flood reached 1st floor. Sent Boat R-3 immediately."
+                    </p>
+                    <div class="meter-footnote">HUMAN OVERSIGHT PROTECTS EVERY COMMUNITY</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Block 3: Combining Calls -->
+              <div class="value-block">
+                <div class="block-content">
+                  <h3 class="block-title is-blinker">03 · Grouping Repeated Calls on the Same Street</h3>
+                  <p class="block-text">
+                    When a whole street floods, 40 neighbors might all call for help at the same time. 
+                    ReliefLens automatically groups calls from the same location together. 
+                    This ensures rescue dispatchers don't get overwhelmed and prevents sending five boats 
+                    to one house while another neighborhood is left waiting.
+                  </p>
+                  <button class="base-button is-button btn-open-dedup-action" data-cursor="DIFF">
+                    <span class="button-title">See Grouped Calls ➔</span>
+                  </button>
+                </div>
+                <div class="block-asset">
+                  <div class="corner-cross cross-tl"></div>
+                  <div class="corner-cross cross-tr"></div>
+                  <div class="corner-cross cross-bl"></div>
+                  <div class="corner-cross cross-br"></div>
+                  <div class="telemetry-card-preview">
+                    <div class="preview-metric-row">
+                      <span class="k">COMBINED NEIGHBOR CALLS:</span>
+                      <span class="v text-yellow">3 CALLS MATCH ON RIVER ROAD</span>
+                    </div>
+                    <div class="cluster-preview-tags">
+                      <span class="tag-pill">SAME STREET</span>
+                      <span class="tag-pill">6 MINUTES APART</span>
+                      <span class="tag-pill">COMBINED INTO 1 MISSION</span>
+                    </div>
+                    <div class="meter-footnote">SAVES VALUABLE RESCUE BOATS FOR OTHERS</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             SECTION 3: HARVESTER SHOWCASE (4 SIMPLE STEPS OF RESCUE)
+             ================================================================ -->
+        <section class="harvester" id="showcase">
+          <div class="harvester-head">
+            <h2 class="harvester-heading">How ReliefLens works in 4 simple steps</h2>
+            <p class="harvester-sub">From your first call for help to a rescue team reaching your doorstep.</p>
+          </div>
+
+          <div class="harvester-slider">
+            <div class="harvester-container">
+              
+              <!-- Sticky Left/Right Navigation Indicators -->
+              <ul class="harvester-nav" role="tablist">
+                <li class="nav-item">
+                  <button class="nav-btn active" data-slide="0" aria-label="Step 1 Gathering Every Call">
+                    <span class="nav-num">STEP 1</span>
+                    <div class="nav-indicator"><div class="nav-progress"></div></div>
+                  </button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-btn" data-slide="1" aria-label="Step 2 Understanding Who Needs Help">
+                    <span class="nav-num">STEP 2</span>
+                    <div class="nav-indicator"><div class="nav-progress"></div></div>
+                  </button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-btn" data-slide="2" aria-label="Step 3 Live Map of Danger">
+                    <span class="nav-num">STEP 3</span>
+                    <div class="nav-indicator"><div class="nav-progress"></div></div>
+                  </button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-btn" data-slide="3" aria-label="Step 4 Sending the Right Rescue">
+                    <span class="nav-num">STEP 4</span>
+                    <div class="nav-indicator"><div class="nav-progress"></div></div>
+                  </button>
+                </li>
+              </ul>
+
+              <!-- Showcase Slides Content -->
+              <div class="harvester-slides">
+                
+                <!-- Slide 0: Triage Feed -->
+                <div class="h-slide active" data-index="0">
+                  <div class="h-slide-content">
+                    <h3 class="h-slide-title">01 · Gathering Every Call for Help</h3>
+                    <p class="h-slide-text">
+                      We listen to citizen text messages, phone calls, emergency radio, water depth sensors in rivers, and weather satellites in one place. No call is lost or overlooked during the storm.
+                    </p>
+                    <div class="h-slide-meta">
+                      <span class="h-meta-pill text-yellow">18 ACTIVE EMERGENCIES TRACKED</span>
+                      <span class="h-meta-pill">UPDATES EVERY SECOND</span>
+                    </div>
+                  </div>
+
+                  <div class="inversa-window">
+                    <div class="window-inner">
+                      <div class="window-title-bar">
+                        <span class="blinker-square"></span>
+                        <span class="window-title-text">INCOMING CALLS & REPORTS</span>
+                      </div>
+                      <div class="window-content-stream">
+                        <div class="stream-entry">
+                          <span class="stream-time">11:04 AM</span>
+                          <span class="stream-src">CITIZEN TEXT MESSAGE</span>
+                          <p class="stream-msg">"Water rising fast at 42 River Road. 6 seniors who cannot walk are stuck on the porch. Please send a boat."</p>
+                        </div>
+                        <div class="stream-entry">
+                          <span class="stream-time">10:58 AM</span>
+                          <span class="stream-src">FIRE DEPARTMENT RADIO</span>
+                          <p class="stream-msg">"Water surrounding St. Jude Care Home. 45 residents sheltering on second floor. First floor flooded."</p>
+                        </div>
+                        <div class="stream-entry">
+                          <span class="stream-time">10:45 AM</span>
+                          <span class="stream-src">RIVER DEPTH SENSOR</span>
+                          <p class="stream-msg">"Water height increased by 6 inches in the last hour. River bank overflowing."</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Slide 1: Explainability Engine -->
+                <div class="h-slide" data-index="1">
+                  <div class="h-slide-content">
+                    <h3 class="h-slide-title">02 · Understanding Who Needs Help First</h3>
+                    <p class="h-slide-text">
+                      The platform calculates danger using 4 clear factors: Is water threatening human life? Are vulnerable people trapped? How much time is left before roads flood? And how certain is the location?
+                    </p>
+                    <div class="h-slide-meta">
+                      <span class="h-meta-pill text-yellow">CLEAR MATHEMATICAL FORMULA</span>
+                      <span class="h-meta-pill">NOT A BLACK BOX</span>
+                    </div>
+                  </div>
+
+                  <div class="inversa-window">
+                    <div class="window-inner">
+                      <div class="window-title-bar">
+                        <span class="blinker-square"></span>
+                        <span class="window-title-text">PRIORITY SCORE EXPLANATION</span>
+                      </div>
+                      <div class="window-content-stream">
+                        <div class="math-breakdown-row">
+                          <div class="math-factor"><span class="k">DANGER LEVEL:</span><span class="v text-urgent">95/100 (Deep water rising)</span></div>
+                          <div class="math-factor"><span class="k">PEOPLE AT RISK:</span><span class="v text-urgent">82/100 (45 seniors trapped)</span></div>
+                          <div class="math-factor"><span class="k">TIME LEFT:</span><span class="v text-warning">90/100 (Cut off in 20 min)</span></div>
+                          <div class="math-factor"><span class="k">LOCATION CERTAINTY:</span><span class="v text-yellow">42/100 (Checking GPS)</span></div>
+                        </div>
+                        <div class="math-total-banner">
+                          <span class="k">TOTAL EMERGENCY PRIORITY:</span>
+                          <span class="v text-urgent">88 / 100 [CRITICAL RESCUE]</span>
+                        </div>
+                        <p class="math-rec">
+                          "Recommendation: Send Search Drone Alpha to confirm location, then immediately send Rescue Boat R-3."
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Slide 2: Geospatial Map -->
+                <div class="h-slide" data-index="2">
+                  <div class="h-slide-content">
+                    <h3 class="h-slide-title">03 · Live Map of the Disaster Area</h3>
+                    <p class="h-slide-text">
+                      Rescue commanders see live flood water boundaries, blocked roads, and the exact positions of nearby rescue boats and helicopters on an interactive satellite map.
+                    </p>
+                    <div class="h-slide-meta">
+                      <span class="h-meta-pill text-yellow">LIVE RADAR ACTIVE</span>
+                      <span class="h-meta-pill">SAFE ESCAPE ROUTES MARKED</span>
+                    </div>
+                  </div>
+
+                  <div class="inversa-window">
+                    <div class="window-inner">
+                      <div class="window-title-bar">
+                        <span class="blinker-square"></span>
+                        <span class="window-title-text">RESCUE SATELLITE MAP</span>
+                      </div>
+                      <div class="window-canvas-embed">
+                        <div class="radar-scan-circle">
+                          <div class="radar-needle"></div>
+                        </div>
+                        <div class="radar-telemetry-badge">
+                          <span>FLOOD BASIN // WATER LEVEL: 12.5 FEET (RISING)</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Slide 3: Deduplication Engine -->
+                <div class="h-slide" data-index="3">
+                  <div class="h-slide-content">
+                    <h3 class="h-slide-title">04 · Fast Dispatch Without Wasting Help</h3>
+                    <p class="h-slide-text">
+                      Commanders slide to confirm and deploy resources with safety locks so tired dispatchers never click by mistake. Every rescue vehicle is tracked until everyone is safe.
+                    </p>
+                    <div class="h-slide-meta">
+                      <span class="h-meta-pill text-yellow">ACCIDENTAL CLICK PREVENTION</span>
+                      <span class="h-meta-pill">SIGNED RESCUE LOG</span>
+                    </div>
+                  </div>
+
+                  <div class="inversa-window">
+                    <div class="window-inner">
+                      <div class="window-title-bar">
+                        <span class="blinker-square"></span>
+                        <span class="window-title-text">DEPLOYMENT CONFIRMATION</span>
+                      </div>
+                      <div class="window-content-stream">
+                        <div class="diff-summary-chip">
+                          <span>RESOURCE ALLOCATED: AQUATIC RESCUE BOAT R-3</span>
+                        </div>
+                        <div class="diff-actions-mock">
+                          <span class="mock-btn active">RESCUE BOAT EN ROUTE (ETA: 8 MIN)</span>
+                          <span class="mock-btn">HELICOPTER ON STANDBY</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             SECTION 4: LIVE OPERATIONAL COMMAND CENTER
+             ================================================================ -->
+        <section class="command-section" id="command">
+          <div class="command-section-header">
+            <div class="section-title-wrap">
+              <span class="blinker-square"></span>
+              <h2 class="section-title">LIVE RESCUE MAP & HELP QUEUE</h2>
+            </div>
+            <div class="section-badge-wrap">
+              <span class="stat-pill">18 TOTAL CALLS</span>
+              <span class="stat-pill text-urgent">4 CRITICAL EMERGENCIES</span>
+              <span class="stat-pill text-warning">5 BEING CHECKED</span>
+              <span class="stat-pill text-yellow">RESCUE CREWS ACTIVE</span>
+            </div>
+          </div>
+
+          <!-- The Live 60/40 Split Command Interface -->
+          <div class="command-interface-grid">
+            
+            <!-- LEFT 60%: Interactive Situation Map -->
+            <div class="command-map-column">
+              <div class="map-toolbar">
+                <div class="map-coords" id="cursorCoords">CLICK ANY PIN ON MAP TO SEE DETAILS</div>
+                <div class="map-layer-pills">
+                  <button class="layer-chip active" data-layer="radar">RADAR SCAN</button>
+                  <button class="layer-chip active" data-layer="flood">FLOOD WATER</button>
+                  <button class="layer-chip active" data-layer="uncertainty">GPS RADIUS</button>
+                  <button class="layer-chip active" data-layer="units">RESCUE TEAMS</button>
+                </div>
+              </div>
+
+              <div class="canvas-holder">
+                <canvas id="tacticalMap" aria-label="Interactive situational flood map"></canvas>
+                <div class="canvas-reticle-center"></div>
+                <div class="canvas-floating-telemetry">
+                  <span class="chip-item">FLOOD SURGE: <strong class="text-urgent">+5.5 INCHES / HR</strong></span>
+                  <span class="chip-item">PEAK CREST: <strong class="text-warning">IN 38 MINUTES</strong></span>
+                  <span class="chip-item">DRONE EYE: <strong class="text-yellow">SEARCHING ZONE 7</strong></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT 40%: Unified Triage Feed -->
+            <div class="command-triage-column">
+              <div class="triage-top-bar">
+                <h3 class="triage-title">PEOPLE ASKING FOR RESCUE</h3>
+                <div class="triage-filter-tabs">
+                  <button class="triage-tab active" data-filter="all">ALL (18)</button>
+                  <button class="triage-tab" data-filter="critical">URGENT (4)</button>
+                  <button class="triage-tab" data-filter="unverified">NEEDS CHECKING (5)</button>
+                  <button class="triage-tab" data-filter="clusters">GROUPED (3)</button>
+                </div>
+              </div>
+
+              <!-- Live scrollable list of incidents -->
+              <div class="incident-stream" id="incidentList" role="feed">
+                <!-- Dynamically rendered by main.js with plain English & high visibility -->
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Sticky Coordinator Control Bar at the base of the command terminal -->
+          <div class="control-hud-bar">
+            <div class="hud-target-indicator">
+              <span class="k">SELECTED CALL:</span>
+              <span class="target-id" id="controlIncidentId">#FL-8042</span>
+              <span class="target-title" id="controlIncidentTitle">ST. JUDE SENIOR CARE FLOODING</span>
+              <span class="target-score" id="controlIncidentScore">88/100 URGENT</span>
+            </div>
+
+            <div class="hud-action-cluster">
+              <div class="unit-allocator-wrap">
+                <label for="dispatchUnitSelect" class="alloc-label">SEND HELP:</label>
+                <select id="dispatchUnitSelect" class="inversa-select">
+                  <option value="BOAT-R3">AQUATIC RESCUE BOAT R-3 (READY)</option>
+                  <option value="HELO-SAR1">HELICOPTER SAR-1 (AIRLIFT READY)</option>
+                  <option value="HIGH-CLEAR-4">HIGH-WATER 4WD TRUCK 4 (EN ROUTE)</option>
+                  <option value="DRONE-ALPHA">SEARCH DRONE ALPHA (AIRBORNE)</option>
+                  <option value="MEDIC-TEAM-2">SWIFTWATER PARAMEDIC T-2 (STAGED)</option>
+                </select>
+              </div>
+
+              <!-- Slide-to-Confirm Emergency Dispatch Failsafe -->
+              <div class="slide-confirm-box" title="Drag slider right to deploy rescue team. Prevents accidental clicks.">
+                <div class="slide-track">
+                  <span class="slide-label" id="slideTrackText">SLIDE RIGHT TO SEND RESCUE ➔</span>
+                  <div class="slide-fill" id="slideFill"></div>
+                  <input type="range" id="dispatchSlider" min="0" max="100" value="0" class="slide-range" aria-label="Slide to confirm dispatch">
+                </div>
+              </div>
+
+              <button id="btnOpenScorecard" class="base-button is-button" style="height: 38px; padding: 0 1.2rem;">
+                <span class="button-title">Why This Priority?</span>
+              </button>
+              <button id="btnOpenAudit" class="base-button is-ghost" style="height: 38px; padding: 0 1rem;">
+                <span class="button-title">Signed Log (<span id="auditCount">4</span>)</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             SECTION 5: TESTIMONIALS & STATEMENTS (Inversa .quotes style)
+             ================================================================ -->
+        <section class="quotes" id="quotes">
+          <svg viewBox="0 0 1600 38" fill="none" xmlns="http://www.w3.org/2000/svg" class="shape-svg">
+            <path d="M0 35.5H622.231C639.022 35.5 655.757 33.5778 672.111 29.7709L775.389 5.72905C791.743 1.92219 808.478 0 825.269 0H1600V38H0V35.5Z" fill="currentColor"></path>
+          </svg>
+
+          <div class="quotes-container">
+            <div class="quotes-mark">“</div>
+            <div class="quotes-indicator">
+              <div class="quotes-numbers">
+                <span id="quoteCurrentIndex">001</span>
+                <span>/</span>
+                <span>003</span>
+              </div>
+              <div class="quotes-progress-bar">
+                <div class="quotes-progress-fill" id="quoteProgressFill"></div>
+              </div>
+            </div>
+
+            <div class="quotes-blocks">
+              <div class="quote-block active" id="quoteBlock">
+                <blockquote class="quote-text" id="quoteText">
+                  "When the East River levee failed, our phones didn't stop ringing. ReliefLens clearly showed us that 45 elderly residents were trapped in St. Jude care home before the access road went underwater. We got boats to them in 15 minutes."
+                </blockquote>
+                <div class="quote-author" id="quoteAuthor">
+                  Chief Marcus Vance · Incident Commander, County Emergency Rescue
+                </div>
+              </div>
+            </div>
+
+            <div class="quotes-controls">
+              <button id="prevQuoteBtn" class="quote-nav-btn" aria-label="Previous quote">←</button>
+              <button id="nextQuoteBtn" class="quote-nav-btn" aria-label="Next quote">→</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             SECTION 6: INVERSA FOOTER WITH MONUMENTAL LOGO
+             ================================================================ -->
+        <footer class="footer" id="contact">
+          <div class="footer-row footer-grid">
+            
+            <!-- Column 1: Contact & Dispatch -->
+            <div class="footer-column">
+              <h4 class="footer-title is-blinker">Emergency Contacts</h4>
+              <ul class="footer-links">
+                <li><strong class="text-yellow">EMERGENCY LINE: CALL 911</strong></li>
+                <li><a href="mailto:help@relieflens.org" class="footer-link">help@relieflens.org</a></li>
+                <li><span class="footer-link">Emergency Radio: 154.280 MHz</span></li>
+                <li class="footer-subitem">
+                  <span class="subtext">
+                    ReliefLens Community Crisis Network<br>
+                    Human-in-the-Loop Emergency Response<br>
+                    <a href="#values" class="footer-more-link">Learn How Rescue Decisions Are Made ➔</a>
+                  </span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Column 2: Safety Standards -->
+            <div class="footer-column">
+              <h4 class="footer-title is-blinker">Safety & Protection</h4>
+              <ul class="footer-links">
+                <li><span class="footer-link">Accessible for low vision and high-stress situations</span></li>
+                <li><span class="footer-link">Compatible with local Fire & Rescue services</span></li>
+                <li><span class="footer-link">No automated decisions without human sign-off</span></li>
+              </ul>
+            </div>
+
+            <!-- Column 3: Emergency Bulletins -->
+            <div class="footer-column">
+              <h4 class="footer-title is-blinker">Emergency Weather Alerts</h4>
+              <p class="footer-subtext">Sign up to get instant flood warnings, evacuation route maps, and shelter opening notices on your phone.</p>
+              <form class="footer-subscribe-form" onsubmit="event.preventDefault(); alert('You are now signed up for emergency flood and weather alerts.');">
+                <input type="email" placeholder="YOUR EMAIL OR PHONE NUMBER" required class="footer-input">
+                <button type="submit" class="footer-submit-btn" aria-label="Subscribe to alerts">➔</button>
+              </form>
+            </div>
+
+          </div>
+
+          <!-- Monumental Full-Width Brand Outline Typography (Inversa Style) -->
+          <div class="footer-row footer-monolith">
+            <div class="monolith-text">RELIEFLENS</div>
+          </div>
+
+          <div class="footer-row footer-bottom-meta">
+            <div class="legal-links">
+              <span>FREE PUBLIC EMERGENCY RESPONSE PLATFORM</span>
+              <span>·</span>
+              <span>IN AN IMMEDIATE THREAT TO LIFE, CALL 911</span>
+            </div>
+            <div class="build-ver">RELIEFLENS 2026 // PUBLIC SERVICE EDITION</div>
+          </div>
+        </footer>
+
+      </div>
+    </main>
+
+    <!-- ====================================================================
+         7. TACTICAL & CITIZEN MODALS
+         ==================================================================== -->
+    
+    <!-- MODAL 0: SIMPLE CALL FOR HELP MODAL (FOR REGULAR USERS) -->
+    <dialog id="callHelpModal" class="tactical-modal">
+      <div class="modal-card modal-help-dialog">
+        <header class="modal-header modal-header-urgent">
+          <div class="modal-title-cluster">
+            <span class="modal-kicker text-white">🚨 CALL FOR RESCUE & EMERGENCY HELP</span>
+            <h3 class="modal-title text-white">Tell us where you are — Rescue teams will see your request immediately</h3>
+          </div>
+          <button id="closeCallHelpBtn" class="close-btn" aria-label="Close">✕</button>
+        </header>
+        <form class="help-form-body" id="citizenHelpForm">
+          <div class="form-field">
+            <label for="helpLocation" class="form-label">1. Where are you right now? (Street address, house number, apartment, or landmark) *</label>
+            <input type="text" id="helpLocation" class="inversa-input-lg" placeholder="e.g., 42 River Road, 2nd floor porch, or near St. Jude Care Home" required>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label">2. What danger is happening? (Choose what fits best) *</label>
+            <div class="hazard-options-grid">
+              <label class="hazard-pill-radio">
+                <input type="radio" name="hazardType" value="flood" checked>
+                <span>🌊 Water Rising / Trapped by Flood</span>
+              </label>
+              <label class="hazard-pill-radio">
+                <input type="radio" name="hazardType" value="roof">
+                <span>🏠 Trapped on Roof or Upper Floor</span>
+              </label>
+              <label class="hazard-pill-radio">
+                <input type="radio" name="hazardType" value="medical">
+                <span>🚑 Someone Injured / Sick / Needs Medicine</span>
+              </label>
+              <label class="hazard-pill-radio">
+                <input type="radio" name="hazardType" value="elderly">
+                <span>👵 Elderly, Disabled, or Babies Trapped</span>
+              </label>
+              <label class="hazard-pill-radio">
+                <input type="radio" name="hazardType" value="road">
+                <span>🚗 Stuck in Car / Road Underwater</span>
+              </label>
+              <label class="hazard-pill-radio">
+                <input type="radio" name="hazardType" value="power">
+                <span>⚡ Power Out / No Food / No Clean Water</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-field">
+              <label for="helpPeopleCount" class="form-label">3. How many people need rescue? *</label>
+              <input type="number" id="helpPeopleCount" class="inversa-input-lg" min="1" max="500" value="2" required>
+            </div>
+            <div class="form-field">
+              <label for="helpPhone" class="form-label">4. Your phone number (or neighbor's phone to call you back) *</label>
+              <input type="tel" id="helpPhone" class="inversa-input-lg" placeholder="e.g., 555-0199" required>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="helpNotes" class="form-label">5. Extra details for rescue crews (e.g. house color, water depth, flashing light)?</label>
+            <textarea id="helpNotes" rows="2" class="inversa-textarea" placeholder="e.g., Water is 4 feet deep outside, power is out, we have a white towel tied to front porch."></textarea>
+          </div>
+
+          <div class="help-submit-row">
+            <button type="submit" class="base-button is-emergency-cta" style="width: 100%; height: 50px; font-size: 1rem;">
+              <span class="button-title">🚨 SEND RESCUE REQUEST TO DISPATCH TEAM NOW ➔</span>
+            </button>
+            <p class="submit-disclaimer">
+              🔒 100% Free Service. Sent directly to local Fire & Rescue dispatchers. A boat or emergency vehicle will be assigned.
+            </p>
+          </div>
+        </form>
+      </div>
+    </dialog>
+
+    <!-- MODAL 1: EXPLAINABLE SCORECARD (SIMPLE WORDS) -->
+    <dialog id="scorecardModal" class="tactical-modal">
+      <div class="modal-card">
+        <header class="modal-header">
+          <div class="modal-title-cluster">
+            <span class="modal-kicker">EXPLAINABLE PRIORITIZATION ENGINE</span>
+            <h3 id="scorecardTitle" class="modal-title">WHY THIS EMERGENCY HAS PRIORITY SCORE 88/100</h3>
+          </div>
+          <button id="closeScorecardBtn" class="close-btn" aria-label="Close">✕</button>
+        </header>
+        <div class="scorecard-body">
+          <div class="scorecard-hero">
+            <div class="score-number-box">
+              <div class="score-display-number" id="scTotalScore">88</div>
+              <div class="score-denom">/ 100</div>
+              <span class="score-tier-label text-urgent" id="scTierLabel">CRITICAL PRIORITY</span>
+            </div>
+            <div class="formula-box">
+              <div class="formula-title-clean">HOW WE CALCULATE THIS NUMBER FAIRLY:</div>
+              <code>PRIORITY = 40%(DANGER) + 30%(PEOPLE TRAPPED) + 20%(TIME LEFT) + 10%(LOCATION CHECK)</code>
+              <p class="formula-desc">Every factor is verified. You can move the sliders below to see how the score changes.</p>
+              <div class="formula-calc" id="scDynamicFormula">0.40(95) + 0.30(82) + 0.20(90) + 0.10(42) = <strong>88.4 / 100</strong></div>
+            </div>
+          </div>
+          <div class="vector-grid">
+            <div class="vector-card">
+              <div class="vector-hdr"><span>01 · HOW BAD IS THE DANGER? (40% Weight)</span><span id="scValThreat" class="text-urgent">95/100</span></div>
+              <input type="range" id="sliderThreat" min="0" max="100" value="95" class="inversa-slider">
+              <div class="vector-evidence" id="scReasonThreat">Water depth is over 6 feet and rising 5 inches every hour. Rapid flooding into single-story homes.</div>
+            </div>
+            <div class="vector-card">
+              <div class="vector-hdr"><span>02 · HOW MANY PEOPLE ARE IN DANGER? (30% Weight)</span><span id="scValPop" class="text-urgent">82/100</span></div>
+              <input type="range" id="sliderPop" min="0" max="100" value="82" class="inversa-slider">
+              <div class="vector-evidence" id="scReasonPop">St. Jude Senior Care Home is 400 feet from levee. 45 elderly residents who cannot walk + 12 care staff.</div>
+            </div>
+            <div class="vector-card">
+              <div class="vector-hdr"><span>03 · HOW MUCH TIME BEFORE CUT OFF? (20% Weight)</span><span id="scValTime" class="text-warning">90/100</span></div>
+              <input type="range" id="sliderTime" min="0" max="100" value="90" class="inversa-slider">
+              <div class="vector-evidence" id="scReasonTime">Main access bridge will be completely submerged in less than 22 minutes.</div>
+            </div>
+            <div class="vector-card vector-amber">
+              <div class="vector-hdr"><span>04 · HOW SURE ARE WE OF LOCATION? (10% Weight)</span><span id="scValConf" class="text-yellow">42/100</span></div>
+              <input type="range" id="sliderConf" min="0" max="100" value="42" class="inversa-slider">
+              <div class="vector-evidence text-yellow" id="scReasonConf">⚠️ Location was estimated from a cell tower. Sending a drone or local beacon check to verify exact GPS.</div>
+            </div>
+          </div>
+          <div class="recommendation-box">
+            <span class="rec-title">SYSTEM RECOMMENDATION FOR RESCUE CHIEF:</span>
+            <p id="scAiRecommendation">"Send Search Drone Alpha to confirm location, then immediately commit Rescue Boat R-3."</p>
+          </div>
+          <div class="override-panel">
+            <label for="overrideNoteInput" class="override-lbl">RESCUE CHIEF SIGN-OFF & NOTES (MANDATORY LOG):</label>
+            <textarea id="overrideNoteInput" rows="2" class="inversa-textarea" placeholder="e.g., Confirmed with nurse on second floor; water reached stairs, sending boat immediately."></textarea>
+            <div class="override-actions">
+              <button id="btnResetScorecard" class="base-button is-ghost"><span class="button-title">Reset to Default</span></button>
+              <button id="btnCommitOverride" class="base-button is-button"><span class="button-title">Approve & Sign Off</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- MODAL 2: DEDUPLICATION -->
+    <dialog id="dedupModal" class="tactical-modal">
+      <div class="modal-card modal-wide">
+        <header class="modal-header">
+          <div class="modal-title-cluster">
+            <span class="modal-kicker">CALL GROUPING & VERIFICATION</span>
+            <h3 id="dedupTitle" class="modal-title">COMPARING DUPLICATE EMERGENCY CALLS ON THE SAME STREET</h3>
+          </div>
+          <button id="closeDedupBtn" class="close-btn" aria-label="Close">✕</button>
+        </header>
+        <div class="dedup-body">
+          <div class="dedup-banner">
+            <div><span class="k">SIMILARITY MATCH</span><span class="v text-urgent" id="dedupSemanticMatch">89.4% SAME EVENT</span></div>
+            <div><span class="k">DISTANCE APART</span><span class="v text-urgent" id="dedupGeoDist">120 METERS</span></div>
+            <div><span class="k">TIME BETWEEN CALLS</span><span class="v" id="dedupTimeDelta">+6 MINUTES</span></div>
+            <div><span class="k">RECOMMENDATION</span><span class="v text-yellow">COMBINE INTO 1 RESCUE</span></div>
+          </div>
+          <div class="dedup-split-grid">
+            <div class="dedup-box incoming">
+              <span class="box-tag">NEW CITIZEN CALL (11:04 AM)</span>
+              <h4 id="dupCandTitle">"Water rising fast at 42 River Road, elderly people stuck on porch"</h4>
+              <p id="dupCandText">"Water is up to the second porch step. We have 6 seniors who cannot walk upstairs. Need rescue boat quickly."</p>
+              <div class="tag-row"><span class="tag">LOCATION: 42 RIVER ROAD</span><span class="tag text-yellow">CALLER CELL PHONE</span></div>
+            </div>
+            <div class="dedup-diff-center">
+              <div class="diff-title">WHY THESE MATCH:</div>
+              <ul>
+                <li>✓ Same address: "River Road"</li>
+                <li>✓ Same people: "Elderly seniors"</li>
+                <li>✓ Same emergency: Rising flood</li>
+                <li>Δ Caller reported 6 people; care home has 45 total</li>
+              </ul>
+            </div>
+            <div class="dedup-box master">
+              <span class="box-tag">EXISTING MASTER CALL #FL-8042</span>
+              <h4 id="dupMasterTitle">St. Jude Senior Care Center - Levee Overflow</h4>
+              <p id="dupMasterText">"Fire Chief on scene. Water surrounding building. Ground floor compromised. 45 residents sheltering on floor 2."</p>
+              <div class="tag-row"><span class="tag">LOCATION: ST. JUDE CARE COMPLEX</span><span class="tag text-stable">CONFIRMED</span></div>
+            </div>
+          </div>
+          <div class="dedup-actions-row">
+            <button id="btnDismissDuplicate" class="base-button is-ghost"><span class="button-title">Not an Emergency</span></button>
+            <button id="btnKeepDistinct" class="base-button is-ghost"><span class="button-title">Keep as Separate Call</span></button>
+            <button id="btnMergeDuplicate" class="base-button is-button"><span class="button-title">Combine Calls (+18% Location Confidence)</span></button>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- MODAL 3: AUDIT LEDGER -->
+    <dialog id="auditModal" class="tactical-modal">
+      <div class="modal-card">
+        <header class="modal-header">
+          <div class="modal-title-cluster">
+            <span class="modal-kicker">PUBLIC ACCOUNTABILITY</span>
+            <h3 class="modal-title">RECORDED RESCUE DECISIONS & CHIEF SIGN-OFFS</h3>
+          </div>
+          <button id="closeAuditBtn" class="close-btn" aria-label="Close">✕</button>
+        </header>
+        <div class="audit-body">
+          <p style="font-size: 0.8rem; color: var(--color-creme); margin-bottom: 1rem;">
+            Every time a rescue boat or helicopter is sent, or a priority score is adjusted, the commander's name and justification are permanently recorded here.
+          </p>
+          <table class="audit-table">
+            <thead>
+              <tr>
+                <th>TIME</th><th>COMMANDER</th><th>DECISION</th><th>LOCATION</th><th>DETAILS</th><th>REASON GIVEN</th><th>DIGITAL SEAL</th>
+              </tr>
+            </thead>
+            <tbody id="auditTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  </div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

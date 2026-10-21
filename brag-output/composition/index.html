@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ReliefLens — Cinematic Launch Video (/brag)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #11130d;
+      --bg-panel: #171a11;
+      --bg-elevated: #1e2417;
+      --fg: #f5f5ee;
+      --fg-muted: #e8e9e1;
+      --grey-hairline: #3a3d31;
+      --yellow: #ebfc72;
+      --red: #ff5b42;
+      --green: #00e5a3;
+      --cyan: #5cd2e6;
+      --font-mono: "JetBrains Mono", monospace;
+      --font-display: "Syne", sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #090a07;
+      color: var(--fg);
+      font-family: var(--font-mono);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 20px;
+    }
+
+    .viewport-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 1280px;
+      aspect-ratio: 16 / 9;
+      background: var(--bg);
+      border: 1.5px solid var(--grey-hairline);
+      box-shadow: 0 20px 80px rgba(0, 0, 0, 0.95), 0 0 40px rgba(235, 252, 114, 0.05);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Cinematic 16:9 Letterbox Matte Bars */
+    .letterbox-bar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 6%;
+      background: #070805;
+      z-index: 90;
+      border-bottom: 1px solid rgba(58, 61, 49, 0.4);
+      pointer-events: none;
+    }
+    .letterbox-top { top: 0; }
+    .letterbox-bottom { bottom: 0; border-bottom: none; border-top: 1px solid rgba(58, 61, 49, 0.4); }
+
+    /* Film Grain & Scanline Overlay */
+    .film-overlay {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(235, 252, 114, 0.03) 1px, transparent 0);
+      background-size: 24px 24px;
+      pointer-events: none;
+      z-index: 80;
+    }
+
+    /* Screen Stage */
+    .stage {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.45s cubic-bezier(0.165, 0.84, 0.44, 1), transform 0.45s ease;
+      transform: scale(0.97);
+      padding: 60px 80px;
+      z-index: 10;
+    }
+
+    .stage.active {
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1);
+    }
+
+    /* Corner Crosshairs */
+    .cross {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      pointer-events: none;
+      z-index: 85;
+    }
+    .cross-tl { top: 7%; left: 24px; border-top: 2px solid var(--yellow); border-left: 2px solid var(--yellow); }
+    .cross-tr { top: 7%; right: 24px; border-top: 2px solid var(--yellow); border-right: 2px solid var(--yellow); }
+    .cross-bl { bottom: 7%; left: 24px; border-bottom: 2px solid var(--yellow); border-left: 2px solid var(--yellow); }
+    .cross-br { bottom: 7%; right: 24px; border-bottom: 2px solid var(--yellow); border-right: 2px solid var(--yellow); }
+
+    /* Top Live HUD Header */
+    .hud-header {
+      position: absolute;
+      top: 7%;
+      left: 50px;
+      right: 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--yellow);
+      z-index: 85;
+    }
+
+    .beacon-pulse {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: var(--red);
+      border-radius: 50%;
+      margin-right: 8px;
+      box-shadow: 0 0 12px var(--red);
+      animation: pulse 1s infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.85); opacity: 0.7; }
+      100% { transform: scale(1.3); opacity: 1; }
+    }
+
+    /* Subtitles / Voiceover Teleprompter Banner */
+    .vo-banner {
+      position: absolute;
+      bottom: 8%;
+      left: 60px;
+      right: 60px;
+      text-align: center;
+      z-index: 85;
+      pointer-events: none;
+    }
+
+    .vo-text {
+      display: inline-block;
+      background: rgba(17, 19, 13, 0.88);
+      border: 1px solid var(--grey-hairline);
+      padding: 8px 24px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #ffffff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+      letter-spacing: 0.02em;
+      border-radius: 2px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+    }
+
+    .vo-speaker {
+      color: var(--yellow);
+      font-size: 0.72rem;
+      font-weight: 800;
+      margin-right: 8px;
+      letter-spacing: 0.08em;
+    }
+
+    /* ========================================================================
+       SCENE 1: THE FLOOD BREACH (0 - 4.5s)
+       ======================================================================== */
+    .scene-1-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 1.5rem;
+    }
+
+    .alert-tag {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--red);
+      letter-spacing: 0.15em;
+      background: rgba(255, 91, 66, 0.12);
+      border: 1.5px solid var(--red);
+      padding: 6px 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cinema-heading-1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 4.5vw, 4.2rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      text-transform: uppercase;
+      max-width: 900px;
+      text-shadow: 0 4px 30px rgba(0,0,0,0.8);
+    }
+
+    .telemetry-strip-1 {
+      display: flex;
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+
+    .telemetry-chip-1 {
+      background: var(--bg-panel);
+      border: 1px solid var(--grey-hairline);
+      padding: 10px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-align: left;
+    }
+
+    .telemetry-chip-1 .k {
+      font-size: 0.68rem;
+      color: var(--fg-muted);
+    }
+
+    .telemetry-chip-1 .v {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--yellow);
+    }
+
+    /* ========================================================================
+       SCENE 2: SITUATION ROOM (4.5 - 9.5s)
+       ======================================================================== */
+    .scene-2-grid {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .radar-frame {
+      position: relative;
+      width: 100%;
+      height: 380px;
+      background: var(--bg-panel);
+      border: 1.5px solid var(--grey-hairline);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .radar-sweep {
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      border: 1px dashed rgba(235, 252, 114, 0.4);
+    }
+
+    .radar-beam {
+      position: absolute;
+      width: 50%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--yellow));
+      box-shadow: 0 0 14px var(--yellow);
+      left: 50%;
+      top: 50%;
+      transform-origin: left center;
+      animation: spinRadar 3s linear infinite;
+    }
+
+    @keyframes spinRadar {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .hotspot-pin {
+      position: absolute;
+      background: rgba(255, 91, 66, 0.2);
+      border: 1.5px solid var(--red);
+      padding: 6px 12px;
+      border-radius: 3px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pin-st-jude {
+      top: 42%;
+      left: 32%;
+      box-shadow: 0 0 20px rgba(255, 91, 66, 0.5);
+    }
+
+    .boat-indicator {
+      position: absolute;
+      bottom: 28%;
+      right: 22%;
+      border: 1.5px solid var(--yellow);
+      background: rgba(235, 252, 114, 0.15);
+      padding: 4px 10px;
+      font-size: 0.72rem;
+      color: var(--yellow);
+      font-weight: 800;
+      animation: floatBoat 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatBoat {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-8px); }
+    }
+
+    .scene-2-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .scene-tag {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--yellow);
+      letter-spacing: 0.1em;
+    }
+
+    .scene-2-title {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1.15;
+      color: #ffffff;
+    }
+
+    .scene-2-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      font-size: 0.88rem;
+      color: var(--fg-muted);
+    }
+
+    .scene-2-list li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .scene-2-list strong {
+      color: #ffffff;
+    }
+
+    /* ========================================================================
+       SCENE 3: EXPLAINABLE SCORECARD (9.5 - 14.5s)
+       ======================================================================== */
+    .scene-3-box {
+      width: 100%;
+      max-width: 960px;
+      background: var(--bg-panel);
+      border: 1.5px solid var(--grey-hairline);
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .scorecard-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--grey-hairline);
+      padding-bottom: 1.2rem;
+    }
+
+    .scorecard-title-group h3 {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .scorecard-hero-score {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      font-family: var(--font-display);
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--red);
+    }
+
+    .scorecard-hero-score span {
+      font-size: 1.2rem;
+      color: var(--fg-muted);
+    }
+
+    .formula-banner-video {
+      background: var(--bg);
+      border: 1px solid var(--grey-hairline);
+      padding: 10px 16px;
+      font-size: 0.8rem;
+      color: var(--yellow);
+      font-weight: 700;
+    }
+
+    .vectors-video-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+
+    .v-card-video {
+      background: var(--bg-elevated);
+      border: 1px solid var(--grey-hairline);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .v-card-video .label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--fg-muted);
+    }
+
+    .v-card-video .val {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .v-meter-wrap {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+    }
+
+    .v-meter-fill {
+      height: 100%;
+      background: var(--yellow);
+    }
+
+    .human-stamp {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--green);
+      background: rgba(0, 229, 163, 0.1);
+      border: 1.5px solid var(--green);
+      padding: 8px 14px;
+      width: fit-content;
+    }
+
+    /* ========================================================================
+       SCENE 4: DEPLOY & MONUMENTAL OUTRO (14.5 - 20.0s)
+       ======================================================================== */
+    .scene-4-wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 2rem;
+    }
+
+    .dispatch-slider-mock {
+      width: 440px;
+      height: 52px;
+      background: #1b2015;
+      border: 2px solid var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 0 30px rgba(0, 229, 163, 0.3);
+    }
+
+    .slider-text-mock {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.08em;
+      z-index: 2;
+    }
+
+    .monolith-logo-video {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 8vw, 7.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 0.85;
+      color: transparent;
+      -webkit-text-stroke: 2px var(--yellow);
+      text-shadow: 0 0 50px rgba(235, 252, 114, 0.45);
+    }
+
+    .monolith-tagline-video {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 0.02em;
+      margin-top: 0.5rem;
+    }
+
+    .monolith-subline-video {
+      font-size: 0.8rem;
+      color: var(--fg-muted);
+      letter-spacing: 0.08em;
+    }
+
+    /* Controls Bar Below Video */
+    .control-deck {
+      margin-top: 20px;
+      width: 100%;
+      max-width: 1280px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #151810;
+      border: 1px solid var(--grey-hairline);
+      padding: 12px 24px;
+      gap: 1.5rem;
+    }
+
+    .timeline-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .timeline-bar {
+      width: 100%;
+      height: 6px;
+      background: #252a1b;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .timeline-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--yellow);
+      box-shadow: 0 0 10px var(--yellow);
+    }
+
+    .timeline-timestamps {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--fg-muted);
+    }
+
+    .btn-deck {
+      display: flex;
+      gap: 10px;
+    }
+
+    .deck-btn {
+      background: var(--bg);
+      border: 1px solid var(--yellow);
+      color: var(--yellow);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 8px 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .deck-btn:hover {
+      background: var(--yellow);
+      color: #11140d;
+    }
+
+    .deck-btn.primary {
+      background: var(--red);
+      border-color: var(--red);
+      color: #ffffff;
+    }
+
+    .deck-btn.primary:hover {
+      background: #ff7b63;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="viewport-wrapper" id="videoViewport">
+    
+    <!-- Cinematic Letterbox Bars -->
+    <div class="letterbox-bar letterbox-top"></div>
+    <div class="letterbox-bar letterbox-bottom"></div>
+
+    <!-- 8-Corner Crosshairs -->
+    <div class="cross cross-tl"></div>
+    <div class="cross cross-tr"></div>
+    <div class="cross cross-bl"></div>
+    <div class="cross cross-br"></div>
+
+    <!-- HUD Telemetry Bar -->
+    <div class="hud-header">
+      <div>
+        <span class="beacon-pulse"></span>
+        <span>DEFCON 2 // CAT-4 FLOOD BASIN EMERGENCY</span>
+      </div>
+      <div>
+        <span>RELIEFLENS // LAUNCH FILM (20.0s)</span>
+      </div>
+    </div>
+
+    <!-- Subtle Film Texture -->
+    <div class="film-overlay"></div>
+
+    <!-- ====================================================================
+         ACT 1: THE FLOOD BREACH (0.0s - 4.5s)
+         ==================================================================== -->
+    <div class="stage active" id="scene1" data-start="0" data-end="4.5">
+      <div class="scene-1-container">
+        <div class="alert-tag">⚠️ FLOOD LEVEE COMPROMISED · EAST RIVER BASIN</div>
+        <h1 class="cinema-heading-1">
+          When floodwaters rise,<br>every second is a life.
+        </h1>
+        <div class="telemetry-strip-1">
+          <div class="telemetry-chip-1">
+            <span class="k">WATER SURGE RATE</span>
+            <span class="v text-urgent">+5.5 INCHES / HR</span>
+          </div>
+          <div class="telemetry-chip-1">
+            <span class="k">CITIZEN SOS CALLS</span>
+            <span class="v text-urgent">18 EMERGENCIES</span>
+          </div>
+          <div class="telemetry-chip-1">
+            <span class="k">PEAK CREST WINDOW</span>
+            <span class="v text-warning">IN 38 MINUTES</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         ACT 2: THE SITUATION ROOM (4.5s - 9.5s)
+         ==================================================================== -->
+    <div class="stage" id="scene2" data-start="4.5" data-end="9.5">
+      <div class="scene-2-grid">
+        <div class="radar-frame">
+          <div class="radar-sweep">
+            <div class="radar-beam"></div>
+          </div>
+          <div class="hotspot-pin pin-st-jude">
+            <span>🚨 #FL-8042: ST. JUDE ELDERCARE (45 TRAPPED)</span>
+          </div>
+          <div class="boat-indicator">
+            <span>🚤 RESCUE BOAT R-3 (APPROACHING)</span>
+          </div>
+        </div>
+        <div class="scene-2-copy">
+          <span class="scene-tag">ACT II · REAL-TIME CRISIS TELEMETRY</span>
+          <h2 class="scene-2-title">Live Flood Radar & Coordinated Dispatch</h2>
+          <ul class="scene-2-list">
+            <li>✓ <strong>Multi-Source Ingestion:</strong> Phone calls, SMS, IoT river sensors & satellite radar.</li>
+            <li>✓ <strong>Duplicate Clustering:</strong> Groups repeated calls from the same flooded street.</li>
+            <li>✓ <strong>Live Vessel Routing:</strong> Tracks nearby rescue boats, drones, and helicopters.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         ACT 3: THE TRANSPARENT DECISION (9.5s - 14.5s)
+         ==================================================================== -->
+    <div class="stage" id="scene3" data-start="9.5" data-end="14.5">
+      <div class="scene-3-box">
+        <div class="scorecard-header-row">
+          <div class="scorecard-title-group">
+            <span class="scene-tag">ACT III · EXPLAINABLE PRIORITIZATION</span>
+            <h3>How Help is Scored Fairly & Transparently</h3>
+          </div>
+          <div class="scorecard-hero-score">
+            <span class="score-val" id="animatedScore">88</span>
+            <span>/ 100</span>
+          </div>
+        </div>
+        <div class="formula-banner-video">
+          <code>FORMULA: 40%(DANGER) + 30%(PEOPLE TRAPPED) + 20%(TIME LEFT) + 10%(LOCATION CHECK)</code>
+        </div>
+        <div class="vectors-video-grid">
+          <div class="v-card-video">
+            <span class="label">01 · DANGER DEPTH</span>
+            <span class="val text-urgent">95/100</span>
+            <div class="v-meter-wrap"><div class="v-meter-fill" style="width: 95%; background: var(--red);"></div></div>
+          </div>
+          <div class="v-card-video">
+            <span class="label">02 · PEOPLE AT RISK</span>
+            <span class="val text-urgent">82/100</span>
+            <div class="v-meter-wrap"><div class="v-meter-fill" style="width: 82%; background: var(--red);"></div></div>
+          </div>
+          <div class="v-card-video">
+            <span class="label">03 · ESCAPE TIME</span>
+            <span class="val text-warning">90/100</span>
+            <div class="v-meter-wrap"><div class="v-meter-fill" style="width: 90%; background: #f5a623;"></div></div>
+          </div>
+          <div class="v-card-video">
+            <span class="label">04 · LOCATION CONF</span>
+            <span class="val text-yellow">42/100</span>
+            <div class="v-meter-wrap"><div class="v-meter-fill" style="width: 42%; background: var(--yellow);"></div></div>
+          </div>
+        </div>
+        <div class="human-stamp">
+          <span>✓ HUMAN CHIEF VERIFIED · SIGNED BY CAPT. MARCUS VANCE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         ACT 4: DEPLOY & MONUMENTAL OUTRO (14.5s - 20.0s)
+         ==================================================================== -->
+    <div class="stage" id="scene4" data-start="14.5" data-end="20.0">
+      <div class="scene-4-wrap">
+        <div class="dispatch-slider-mock">
+          <div class="slider-text-mock">✓ RESCUE BOAT R-3 DISPATCHED TO ST. JUDE</div>
+        </div>
+        <div>
+          <div class="monolith-logo-video">RELIEFLENS</div>
+          <div class="monolith-tagline-video">When disasters move fast, help moves faster.</div>
+          <div class="monolith-subline-video">100% Transparent Emergency Response · Free Public Platform</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dynamic Subtitle / Voiceover Teleprompter -->
+    <div class="vo-banner">
+      <div class="vo-text" id="voSubtitle">
+        <span class="vo-speaker">VOICEOVER:</span>
+        <span id="voWords">"When catastrophic floodwaters rise... every single second is a life."</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Interactive Cinematic Control Deck -->
+  <div class="control-deck">
+    <div class="btn-deck">
+      <button class="deck-btn" id="btnPlayPause">⏸ PAUSE</button>
+      <button class="deck-btn" id="btnRestart">⏮ RESTART</button>
+      <button class="deck-btn" id="btnToggleVoice">🔊 VOICE: ON</button>
+    </div>
+
+    <div class="timeline-container">
+      <div class="timeline-bar" id="timelineBar">
+        <div class="timeline-fill" id="timelineFill"></div>
+      </div>
+      <div class="timestamps">
+        <span id="timeCurrent">00:00.0</span>
+        <span>20:00.0 (LAUNCH CUT)</span>
+      </div>
+    </div>
+
+    <div class="btn-deck">
+      <button class="deck-btn" id="btnCapturePoster">📸 POSTER (FRAME 0)</button>
+      <button class="deck-btn primary" id="btnExportVideo">🎬 RECORD VIDEO</button>
+    </div>
+  </div>
+
+  <script>
+    // ========================================================================
+    // CINEMATIC LAUNCH TIMELINE RUNTIME (20.0s CONTRACT)
+    // ========================================================================
+    const DURATION = 20.0;
+    let currentTime = 0;
+    let isPlaying = true;
+    let voiceEnabled = true;
+    let lastTimestamp = performance.now();
+
+    const stages = [
+      { id: 'scene1', start: 0.0, end: 4.5, vo: "When catastrophic floodwaters rise... every single second is a life." },
+      { id: 'scene2', start: 4.5, end: 9.5, vo: "ReliefLens maps the crisis in real time, finding trapped families and routing rescue crews." },
+      { id: 'scene3', start: 9.5, end: 14.5, vo: "Every decision is transparent. Every score is verified. And real human chiefs make the final call." },
+      { id: 'scene4', start: 14.5, end: 20.0, vo: "ReliefLens. Because when disasters move fast, help moves faster." }
+    ];
+
+    let spokenActs = new Set();
+
+    // Web Speech API Voiceover Engine
+    function speakVoiceover(text, actIndex) {
+      if (!voiceEnabled || spokenActs.has(actIndex)) return;
+      spokenActs.add(actIndex);
+
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.95; // deliberate, cinematic cadence
+        utterance.pitch = 0.88; // deeper, authoritative voice
+        
+        // Find best cinematic English voice if available
+        const voices = window.speechSynthesis.getVoices();
+        const preferred = voices.find(v => v.lang.includes('en') && (v.name.includes('Natural') || v.name.includes('Male') || v.name.includes('Google') || v.name.includes('David')));
+        if (preferred) utterance.voice = preferred;
+
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    // Web Audio Synthesizer (Atmospheric Drone & Tactical Accents)
+    let audioCtx = null;
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        startAmbientDrone();
+      }
+    }
+
+    function startAmbientDrone() {
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(55, audioCtx.currentTime); // Deep A1 drone
+      
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(140, audioCtx.currentTime);
+
+      gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+    }
+
+    function playTacticalChime(freq = 440) {
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.35);
+    }
+
+    // Animation Loop
+    function tick(now) {
+      const delta = (now - lastTimestamp) / 1000;
+      lastTimestamp = now;
+
+      if (isPlaying) {
+        currentTime += delta;
+        if (currentTime >= DURATION) {
+          currentTime = 0;
+          spokenActs.clear();
+        }
+      }
+
+      // Update UI & Stages
+      updateTimeline();
+      requestAnimationFrame(tick);
+    }
+
+    function updateTimeline() {
+      const pct = (currentTime / DURATION) * 100;
+      document.getElementById('timelineFill').style.width = pct + '%';
+      
+      const secs = Math.floor(currentTime);
+      const decs = Math.floor((currentTime % 1) * 10);
+      document.getElementById('timeCurrent').textContent = `00:${secs < 10 ? '0' : ''}${secs}.${decs}`;
+
+      stages.forEach((st, idx) => {
+        const el = document.getElementById(st.id);
+        if (currentTime >= st.start && currentTime < st.end) {
+          if (!el.classList.contains('active')) {
+            stages.forEach(s => document.getElementById(s.id).classList.remove('active'));
+            el.classList.add('active');
+            playTacticalChime(idx === 3 ? 587 : 440);
+          }
+          document.getElementById('voWords').textContent = `"${st.vo}"`;
+          speakVoiceover(st.vo, idx);
+        }
+      });
+    }
+
+    // Play/Pause
+    const btnPlayPause = document.getElementById('btnPlayPause');
+    btnPlayPause.addEventListener('click', () => {
+      initAudio();
+      isPlaying = !isPlaying;
+      btnPlayPause.textContent = isPlaying ? '⏸ PAUSE' : '▶ PLAY';
+      if (!isPlaying && 'speechSynthesis' in window) window.speechSynthesis.pause();
+      if (isPlaying && 'speechSynthesis' in window) window.speechSynthesis.resume();
+    });
+
+    // Restart
+    document.getElementById('btnRestart').addEventListener('click', () => {
+      initAudio();
+      currentTime = 0;
+      spokenActs.clear();
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      isPlaying = true;
+      btnPlayPause.textContent = '⏸ PAUSE';
+    });
+
+    // Toggle Voice
+    const btnToggleVoice = document.getElementById('btnToggleVoice');
+    btnToggleVoice.addEventListener('click', () => {
+      voiceEnabled = !voiceEnabled;
+      btnToggleVoice.textContent = voiceEnabled ? '🔊 VOICE: ON' : '🔇 VOICE: OFF';
+      if (!voiceEnabled && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+    });
+
+    // Timeline Scrubbing
+    document.getElementById('timelineBar').addEventListener('click', (e) => {
+      initAudio();
+      const rect = e.currentTarget.getBoundingClientRect();
+      const ratio = (e.clientX - rect.left) / rect.width;
+      currentTime = ratio * DURATION;
+      spokenActs.clear();
+      updateTimeline();
+    });
+
+    // Capture Settled Poster Frame (brag.jpg at 18.5s)
+    document.getElementById('btnCapturePoster').addEventListener('click', () => {
+      currentTime = 18.2;
+      isPlaying = false;
+      updateTimeline();
+      alert('Settled Poster Frame (Scene 4 Logo Monolith) selected! Ready to save as brag.jpg.');
+    });
+
+    // Start
+    window.addEventListener('click', () => initAudio(), { once: true });
+    requestAnimationFrame(tick);
+  </script>
+</body>
+</html>

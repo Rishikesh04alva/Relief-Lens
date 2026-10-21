@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReliefLens — Series A Launch Video (2016 Edition)</title>
+  <style>
+    :root {
+      --bg: #090b14;
+      --card-bg: rgba(22, 27, 46, 0.85);
+      --border: rgba(255, 255, 255, 0.1);
+      --primary: #6366f1;
+      --accent-pink: #ec4899;
+      --accent-cyan: #06b6d4;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(circle at 20% 15%, rgba(99, 102, 241, 0.18) 0%, transparent 45%),
+                  radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+                  var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 80px;
+    }
+
+    .container {
+      max-width: 1040px;
+      width: 100%;
+    }
+
+    /* Header Bar */
+    .tc-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tc-badge {
+      background: #00d664;
+      color: #000;
+      font-weight: 900;
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    .tc-meta {
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .yc-pill {
+      background: #1e243d;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #f59e0b;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 999px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Hero title */
+    .hero-title {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 18px;
+      color: var(--text-muted);
+      margin-bottom: 30px;
+      max-width: 780px;
+      line-height: 1.5;
+    }
+
+    .hero-subtitle b {
+      color: #38bdf8;
+    }
+
+    /* Video Player Wrapper */
+    .player-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7),
+                  0 0 35px rgba(99, 102, 241, 0.2);
+      margin-bottom: 32px;
+      backdrop-filter: blur(16px);
+    }
+
+    .player-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      outline: none;
+    }
+
+    /* Action bar */
+    .action-bar {
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      background: rgba(15, 19, 34, 0.9);
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 14px 28px;
+      border-radius: 12px;
+      text-decoration: none;
+      box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.5);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px -4px rgba(236, 72, 153, 0.6);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #e2e8f0;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 14px 22px;
+      border-radius: 12px;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+
+    .video-specs {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-family: monospace;
+    }
+
+    /* Pitch Deck Stats Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 36px;
+    }
+
+    .metric-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #6366f1, #06b6d4);
+    }
+
+    .metric-val {
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 6px;
+    }
+
+    .metric-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #38bdf8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .metric-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Share Copy Box */
+    .share-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 26px;
+      margin-bottom: 36px;
+    }
+
+    .share-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .share-title {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #f8fafc;
+    }
+
+    .copy-btn {
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: #2563eb;
+    }
+
+    .share-box {
+      background: #0f1322;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 18px;
+      color: #cbd5e1;
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      font-family: inherit;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- 2016 TechCrunch & YC Header -->
+    <div class="tc-header">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <span class="tc-badge">TECHCRUNCH</span>
+        <span class="tc-meta">Disrupt SF 2016 // Exclusive Series A</span>
+      </div>
+      <div class="yc-pill">YC W16 ALUMNI</div>
+    </div>
+
+    <!-- Title & Subtitle -->
+    <h1 class="hero-title">DISRUPTING FLOODS.</h1>
+    <p class="hero-subtitle">
+      ReliefLens closes <b>$18,500,000</b> Series A led by Andreessen Horowitz & Sequoia Capital to bring algorithmic dispatch and 100% human-in-the-loop synergy to crisis response.
+    </p>
+
+    <!-- Video Player Card -->
+    <div class="player-card">
+      <div class="player-frame">
+        <video id="bragVideo" controls autoplay muted playsinline poster="brag-output-series-a-2016/brag.jpg">
+          <source src="ReliefLens_Series_A_2016.mp4" type="video/mp4">
+          <source src="brag-output-series-a-2016/brag.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+
+      <div class="action-bar">
+        <div class="btn-group">
+          <a href="ReliefLens_Series_A_2016.mp4" download="ReliefLens_Series_A_2016.mp4" class="btn-primary" id="downloadBtn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download Video (.MP4)
+          </a>
+
+          <a href="brag-output-series-a-2016/brag.jpg" download="ReliefLens_Poster.jpg" class="btn-secondary">
+            Download Frame 0 Poster (.JPG)
+          </a>
+        </div>
+
+        <div class="video-specs">
+          1920×1080 • 30 FPS • 18.0s • 4.45 MB
+        </div>
+      </div>
+    </div>
+
+    <!-- Pitch Deck Metrics -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-val" style="color: #38bdf8;">$4.2T</div>
+        <div class="metric-label">TAM (Addressable Moisture)</div>
+        <div class="metric-desc">Water covers 71% of Earth with 0% enterprise SaaS optimization until now.</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-val" style="color: #a855f7;">10x</div>
+        <div class="metric-label">Rescue Velocity</div>
+        <div class="metric-desc">Algorithmic triage cuts dispatch latency from 45 min down to 4.2 min.</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-val" style="color: #10b981;">99.999%</div>
+        <div class="metric-label">Empathy Uptime</div>
+        <div class="metric-desc">Cloud-native neural architecture with 1-click incident commander sign-off.</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-val" style="color: #ec4899;">0.0x</div>
+        <div class="metric-label">Surge Pricing</div>
+        <div class="metric-desc">Uber for the Apocalypse. Flat rate. No dynamic surge when rivers breach.</div>
+      </div>
+    </div>
+
+    <!-- Ready-to-Post Share Copy -->
+    <div class="share-section">
+      <div class="share-header">
+        <div class="share-title">Ready-to-Post Launch Copy</div>
+        <button class="copy-btn" id="copyBtn" onclick="copyShareText()">Copy to Clipboard</button>
+      </div>
+      <div class="share-box" id="shareText">🚀 WE ARE DISRUPTING FLOODS.
+
+Today, the entire ReliefLens team is beyond thrilled to announce our $18.5M Series A financing, led by Andreessen Horowitz with participation from Sequoia Capital and Y Combinator (W16).
+
+Water has covered 71% of the Earth's surface for over 4 billion years with virtually ZERO SaaS optimization. We're changing that.
+
+By pairing edge neural routing with 100% human-in-the-loop synergy, ReliefLens cuts emergency dispatch latency by 10x—all while maintaining an unprecedented 99.999% empathy uptime.
+
+Think Uber for the apocalypse. Zero surge pricing. Zero hallucination. Just on-demand survival.
+
+We're aggressively hiring 10x rescue ninjas in San Francisco and remote:
+• Unlimited PTO
+• Kombucha on tap
+• Standing kayaks
+• Ergonomic incident command docks
+
+Request TestFlight beta access at relieflens.io!
+
+#Disrupt #SeriesA #TechCrunch #SiliconValley #Startups #YCW16 #VentureCapital #AI</div>
+    </div>
+
+    <footer>
+      ReliefLens Series A 2016 Video • Baked with Frame 0 Poster &amp; High-Bitrate AAC Master
+    </footer>
+  </div>
+
+  <script>
+    function copyShareText() {
+      const text = document.getElementById('shareText').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copyBtn');
+        btn.innerText = '✓ Copied!';
+        setTimeout(() => { btn.innerText = 'Copy to Clipboard'; }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
